@@ -11,6 +11,8 @@ type SpeechRecognitionConstructor = {
   new (): SpeechRecognition;
 }
 
+declare const window: any;
+
 export const useVoiceCommands = (): VoiceCommandsState => {
   const router = useRouter();
   const [isListening, setIsListening] = useState(false);
@@ -18,7 +20,7 @@ export const useVoiceCommands = (): VoiceCommandsState => {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const SpeechRecognition = (window.SpeechRecognition || window.webkitSpeechRecognition) as SpeechRecognitionConstructor;
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (SpeechRecognition) {
         const recognitionInstance = new SpeechRecognition();
         recognitionInstance.continuous = true;

@@ -2,7 +2,7 @@ import { createSpeechlySpeechRecognition } from '@speechly/speech-recognition-po
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
 export class VoiceCommands {
-  private recognition: typeof SpeechRecognition;
+  private recognition!: any;
   private isListening: boolean = false;
   
   constructor() {
