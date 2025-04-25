@@ -130,7 +130,7 @@ export default function DictationTest() {
       <div className="max-w-6xl mx-auto p-8">
         <header className="mb-12">
           <Link href="/">
-            <Button variant="ghost" className="mb-6 hover:bg-muted/50">
+            <Button variant="ghost" className="mb-6 hover:bg-muted/50" size = "">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Home
             </Button>
@@ -144,18 +144,18 @@ export default function DictationTest() {
         </header>
 
         <main className="space-y-8">
-          <Card>
-            <CardHeader>
+          <Card className="w-full">
+            <CardHeader className = "">
               <div className="flex items-center justify-between">
-                <CardTitle>Write What You Hear</CardTitle>
+                <CardTitle className="">Write What You Hear</CardTitle>
                 <Select value={level} onValueChange={handleLevelChange}>
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Select level" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="basic">Basic (1-2 sentences)</SelectItem>
-                    <SelectItem value="intermediate">Intermediate (3-4 sentences)</SelectItem>
-                    <SelectItem value="advanced">Advanced (Complex paragraph)</SelectItem>
+                  <SelectContent className="">
+                    <SelectItem className = "" value="basic">Basic (1-2 sentences)</SelectItem>
+                    <SelectItem className = "" value="intermediate">Intermediate (3-4 sentences)</SelectItem>
+                    <SelectItem className = "" value="advanced">Advanced (Complex paragraph)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -166,6 +166,8 @@ export default function DictationTest() {
                   onClick={handlePlay}
                   className="flex-1"
                   disabled={isPlaying || isLoading}
+                  size= "default"
+                  variant = "default"
                 >
                   <PlayCircle className="w-4 h-4 mr-2" />
                   {isPlaying ? "Playing..." : "Play Text"}
@@ -173,8 +175,9 @@ export default function DictationTest() {
                 <Button 
                   onClick={() => generateText(level)}
                   variant="outline"
-                  disabled={isLoading}
-                >
+                  disabled={isLoading} 
+                  size = "default"    
+                  className=""           >
                   New Text
                 </Button>
               </div>
@@ -188,7 +191,7 @@ export default function DictationTest() {
                   placeholder="Type the text you hear..."
                   className="min-h-[120px] text-lg"
                   value={userInput}
-                  onChange={(e) => setUserInput(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setUserInput(e.target.value)}
                 />
               )}
 
@@ -196,6 +199,8 @@ export default function DictationTest() {
                 onClick={checkAccuracy}
                 className="w-full"
                 disabled={!userInput}
+                variant="default"
+                size="default"
               >
                 <CheckCircle className="w-4 h-4 mr-2" />
                 Check Answer

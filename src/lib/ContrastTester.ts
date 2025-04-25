@@ -104,4 +104,8 @@ export class ContrastTester {
       ]
     };
   }
+
+  public getColorCombinationByName(name: string) {
+    return this.dyslexicFriendlyColors.find(c => c.name === name);
+  }
 }

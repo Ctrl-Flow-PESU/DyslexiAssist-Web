@@ -1,8 +1,9 @@
 import { Groq } from 'groq-sdk';
+import { NextRequest } from 'next/server';
 
 const groq = new Groq();
 
-export async function POST(request) {
+export async function POST(request: NextRequest) {
   try {
     const { imageUrl } = await request.json();
 

@@ -15,8 +15,13 @@ import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, PlayCircle, StopCircle } from "lucide-react";
 import Link from "next/link";
 
-// Mock data - Replace with actual API integration
-const readingTexts = {
+type ReadingLevel = "Level 1" | "Level 2" | "Level 3";
+
+interface ReadingText {
+  text: string;
+}
+
+const readingTexts: Record<ReadingLevel, ReadingText[]> = {
   "Level 1": [{ 
     text: "The cat sat on the mat. It was a sunny day. The birds flew in the sky." 
   }],
@@ -30,11 +35,11 @@ const readingTexts = {
 
 export default function ReadingTest() {
   const [mounted, setMounted] = useState(false);
-  const [level, setLevel] = useState("Level 1");
+  const [level, setLevel] = useState<ReadingLevel>("Level 1");
   const [isReading, setIsReading] = useState(false);
   const [readingSpeed, setReadingSpeed] = useState(0);
-  const [startTime, setStartTime] = useState(null);
-  const [speech, setSpeech] = useState(null);
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [speech, setSpeech] = useState<SpeechSynthesisUtterance | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [generatedText, setGeneratedText] = useState("");
 
@@ -87,7 +92,7 @@ export default function ReadingTest() {
     }
   };
 
-  const handleLevelChange = (newLevel: string) => {
+  const handleLevelChange = (newLevel: ReadingLevel) => {
     setLevel(newLevel);
     generateText(newLevel);
   };
@@ -126,7 +131,7 @@ export default function ReadingTest() {
       <div className="max-w-6xl mx-auto p-8">
         <header className="mb-12">
           <Link href="/">
-            <Button variant="ghost" className="mb-6 hover:bg-muted/50">
+            <Button variant="ghost" className="mb-6 hover:bg-muted/50" size = "default">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Home
             </Button>
@@ -140,18 +145,18 @@ export default function ReadingTest() {
         </header>
 
         <main className="space-y-8">
-          <Card>
-            <CardHeader>
+          <Card className="">
+            <CardHeader className="">
               <div className="flex items-center justify-between">
-                <CardTitle>Select Reading Level</CardTitle>
+                <CardTitle className="">Select Reading Level</CardTitle>
                 <Select value={level} onValueChange={handleLevelChange}>
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Select level" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Level 1">Level 1 (Basic)</SelectItem>
-                    <SelectItem value="Level 2">Level 2 (Intermediate)</SelectItem>
-                    <SelectItem value="Level 3">Level 3 (Advanced)</SelectItem>
+                  <SelectContent className="">
+                    <SelectItem className = "" value="Level 1">Level 1 (Basic)</SelectItem>
+                    <SelectItem className = "" value="Level 2">Level 2 (Intermediate)</SelectItem>
+                    <SelectItem className = "" value="Level 3">Level 3 (Advanced)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -175,6 +180,7 @@ export default function ReadingTest() {
                     onClick={isReading ? handleStopReading : handleStartReading}
                     className="w-full"
                     variant={isReading ? "destructive" : "default"}
+                    size = "default"
                   >
                     {isReading ? (
                       <>

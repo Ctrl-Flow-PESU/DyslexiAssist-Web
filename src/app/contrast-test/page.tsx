@@ -8,11 +8,24 @@ import { ContrastTester } from "@/lib/ContrastTester";
 import { useTheme } from "@/contexts/ThemeContext";
 import Link from "next/link";
 
+interface TestResults {
+  best_combination: string;
+  contrast_ratio: string;
+  comfort_rating: number;
+  recommendations: string[];
+}
+
+interface TestState {
+  started: boolean;
+  completed: boolean;
+  results: TestResults | null;
+}
+
 export default function ContrastTest() {
   const { setColors } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [tester] = useState(() => new ContrastTester());
-  const [state, setState] = useState({
+  const [state, setState] = useState<TestState>({
     started: false,
     completed: false,
     results: null
@@ -77,10 +90,10 @@ export default function ContrastTest() {
             </div>
             <div className="flex flex-col gap-4 mt-6">
               <Button 
+                variant="filled"
+                size="md"
                 onClick={() => {
-                  const bestCombo = tester.dyslexicFriendlyColors.find(
-                    c => c.name === state.results.best_combination
-                  );
+                  const bestCombo = tester.getColorCombinationByName(state.results!.best_combination);
                   if (bestCombo) {
                     setColors(bestCombo.bg, bestCombo.text);
                   }
@@ -93,6 +106,7 @@ export default function ContrastTest() {
                 <Button 
                   variant="outline"
                   className="w-full"
+                  size = ""
                 >
                   Back to Home
                 </Button>
@@ -114,7 +128,7 @@ export default function ContrastTest() {
               This test will help determine the most comfortable text and background
               color combination for your reading experience.
             </p>
-            <Button onClick={startTest} size="lg">
+            <Button onClick={startTest} size="lg" variant="default" className="">
               Start Test
             </Button>
           </div>
@@ -133,8 +147,9 @@ export default function ContrastTest() {
               <div className="space-y-6">
                 <div className="flex items-center gap-4">
                   <Slider
+                    defaultValue={[comfort]}
                     value={[comfort]}
-                    onValueChange={(value) => setComfort(value[0])}
+                    onValueChange={(value: number[]) => setComfort(value[0])}
                     min={1}
                     max={10}
                     step={1}
@@ -152,6 +167,7 @@ export default function ContrastTest() {
             </div>
 
             <Button 
+              variant = "default"
               onClick={submitFeedback} 
               size="lg" 
               className="w-full"

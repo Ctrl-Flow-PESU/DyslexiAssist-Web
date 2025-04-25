@@ -7,19 +7,25 @@ interface VoiceCommandsState {
   stopListening: () => void;
 }
 
+type SpeechRecognitionConstructor = {
+  new (): SpeechRecognition;
+}
+
 export const useVoiceCommands = (): VoiceCommandsState => {
   const router = useRouter();
   const [isListening, setIsListening] = useState(false);
   const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      const recognitionInstance = new SpeechRecognition();
-      recognitionInstance.continuous = true;
-      recognitionInstance.interimResults = false;
-      recognitionInstance.lang = 'en-US';
-      setRecognition(recognitionInstance);
+    if (typeof window !== 'undefined') {
+      const SpeechRecognition = (window.SpeechRecognition || window.webkitSpeechRecognition) as SpeechRecognitionConstructor;
+      if (SpeechRecognition) {
+        const recognitionInstance = new SpeechRecognition();
+        recognitionInstance.continuous = true;
+        recognitionInstance.interimResults = false;
+        recognitionInstance.lang = 'en-US';
+        setRecognition(recognitionInstance);
+      }
     }
   }, []);
 

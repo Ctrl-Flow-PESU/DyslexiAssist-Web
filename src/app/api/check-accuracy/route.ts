@@ -73,7 +73,7 @@ Required JSON structure:
         correct: false,
         message: "Unable to analyze text properly. Please try again.",
         similarity: 0,
-        errors: [`Error analyzing text: ${parseError.message}`]
+        errors: [`Error analyzing text: ${parseError instanceof Error ? parseError.message : 'JSON parsing failed'}`]
       }, { status: 200 });
     }
   } catch (error) {
