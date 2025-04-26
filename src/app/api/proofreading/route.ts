@@ -1,66 +1,52 @@
-import { Groq } from 'groq-sdk';
-import { NextRequest } from 'next/server';
+import { vision } from '@google-cloud/vision';
 
-const groq = new Groq();
+// Initialize the client using the environment variable
+const client = new vision.ImageAnnotatorClient();
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
     const { imageUrl } = await request.json();
+    
+    if (!imageUrl) {
+      throw new Error('No image URL provided');
+    }
 
-    // Extract text from image
-    const extractionCompletion = await groq.chat.completions.create({
-      messages: [
-        {
-          role: "user",
-          content: [
-            {
-              type: "text",
-              text: "Extract all text from this image and format it clearly."
-            },
-            {
-              type: "image_url",
-              image_url: {
-                url: imageUrl
-              }
-            }
-          ]
-        }
-      ],
-      model: "meta-llama/llama-4-maverick-32k",
-      temperature: 0.1,
-      max_completion_tokens: 2048,
+    const base64Data = imageUrl.split(',')[1];
+
+    // 🧠 Step 1: Google Vision OCR
+    const [visionResponse] = await client.textDetection({
+      image: { content: Buffer.from(base64Data, 'base64') },
     });
 
-    const extractedText = extractionCompletion.choices[0].message.content;
+    const textAnnotations = visionResponse.textAnnotations;
+    const extractedText = textAnnotations?.[0]?.description?.trim() || '';
 
-    // Check accuracy
-    const accuracyCompletion = await groq.chat.completions.create({
+    if (!extractedText) {
+      throw new Error('No text extracted from the image');
+    }
+
+    console.log('Extracted text:', extractedText);
+
+    // 🧠 Step 2: Groq grammar correction
+    const grammarFix = await groq.chat.completions.create({
+      model: "meta-llama/llama-4-maverick-32k",
       messages: [
         {
           role: "user",
-          content: `Analyze the accuracy and confidence of the following extracted text. 
-          Consider factors like image quality, text clarity, and potential errors.
-          Provide a brief analysis with a confidence score.
-
-          Extracted text:
-          ${extractedText}`
+          content: Please proofread and correct the following text for grammar, spelling, and clarity:\n\n${extractedText}
         }
       ],
-      model: "meta-llama/llama-4-maverick-32k",
       temperature: 0.2,
-      max_completion_tokens: 1024,
+      max_tokens: 2048,
     });
 
     return Response.json({
       extractedText,
-      accuracyAnalysis: accuracyCompletion.choices[0].message.content
+      accuracyAnalysis: grammarFix.choices[0].message.content.trim(),
     });
-    
+
   } catch (error) {
-    console.error('Text extraction error:', error);
-    return Response.json(
-      { error: 'Failed to process image' },
-      { status: 500 }
-    );
-  }
+    console.error('Proofreading API error:', error.message || error);
+    return Response.json({ error: Failed to extract text: ${error.message} }, { status: 500 });
+  }
 }
