@@ -63,30 +63,32 @@ export default function ProofreadingPage() {
       <div className="max-w-4xl mx-auto space-y-6">
         <h1 className="text-3xl font-bold">Notes Proofreading</h1>
         
-        <Card className="">
-          <CardHeader className="">
-            <CardTitle className="">Upload Image</CardTitle>
+        <Card>
+          <CardHeader>
+            <CardTitle>Upload Image</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex flex-col items-center gap-4">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                className="hidden"
-                id="imageInput"
-              />
-              <label htmlFor="imageInput">
-                <Button 
-                  variant="outline" 
-                  className="cursor-pointer"
-                  disabled={isLoading}
-                  size = "default"
-                >
-                  <Upload className="mr-2 h-4 w-4" />
-                  {isLoading ? 'Processing...' : 'Choose Image'}
-                </Button>
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              disabled={isLoading}
+              className="cursor-pointer"
+            >
+              <label htmlFor="imageInput" className="flex items-center gap-2">
+                <Upload className="h-4 w-4" />
+                {isLoading ? 'Processing...' : 'Choose Image'}
+                <input
+                  id="imageInput"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
               </label>
+            </Button>
+
               
               {imageUrl && (
                 <div className="w-full">
@@ -110,18 +112,18 @@ export default function ProofreadingPage() {
               placeholder="Extracted text will appear here..."
               className="min-h-[200px]"
               value={text}
-              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setText(e.target.value)}
+              onChange={(e) => setText(e.target.value)}
               readOnly={isLoading}
             />
           </CardContent>
         </Card>
 
         {result?.accuracyAnalysis && (
-          <Card className="">
-            <CardHeader className="">
-              <CardTitle className="">Accuracy Analysis</CardTitle>
+          <Card>
+            <CardHeader>
+              <CardTitle>Accuracy Analysis</CardTitle>
             </CardHeader>
-            <CardContent className="">
+            <CardContent>
               <div className="p-4 bg-muted rounded-lg whitespace-pre-wrap">
                 {result.accuracyAnalysis}
               </div>
