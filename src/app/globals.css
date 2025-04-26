@@ -92,6 +92,30 @@
   --sidebar-ring: oklch(0.704 0.04 256.788);
 }
 
+/* Add these custom properties */
+:root {
+  --font-scale: 100%;
+  --line-height: 1.5;
+  --letter-spacing: 0px;
+}
+
+/* Add high contrast theme */
+.high-contrast {
+  --background: #000000;
+  --foreground: #FFFFFF;
+  --primary: #FFFF00;
+  --primary-foreground: #000000;
+  filter: contrast(150%);
+}
+
+/* Add dynamic text styling */
+.dyslexia-friendly {
+  font-size: var(--font-scale);
+  line-height: var(--line-height);
+  letter-spacing: var(--letter-spacing);
+  font-family: var(--font-family);
+}
+
 .dark {
   --background: oklch(0.129 0.042 264.695);
   --foreground: oklch(0.984 0.003 247.858);
