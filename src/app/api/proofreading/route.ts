@@ -1,7 +1,11 @@
 import { vision } from '@google-cloud/vision';
+import { Groq } from "groq-sdk";
 
 // Initialize the client using the environment variable
 const client = new vision.ImageAnnotatorClient();
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY!,
+});
 
 export async function POST(request: Request) {
   try {
@@ -33,7 +37,7 @@ export async function POST(request: Request) {
       messages: [
         {
           role: "user",
-          content: Please proofread and correct the following text for grammar, spelling, and clarity:\n\n${extractedText}
+          content: "Please proofread and correct the following text for grammar, spelling, and clarity:\n\n${extractedText}"
         }
       ],
       temperature: 0.2,
@@ -42,11 +46,13 @@ export async function POST(request: Request) {
 
     return Response.json({
       extractedText,
-      accuracyAnalysis: grammarFix.choices[0].message.content.trim(),
+      accuracyAnalysis: grammarFix?.choices?.[0]?.message?.content?.trim()
     });
 
   } catch (error) {
-    console.error('Proofreading API error:', error.message || error);
-    return Response.json({ error: Failed to extract text: ${error.message} }, { status: 500 });
-  }
+    const err = error as Error;
+    console.error('Proofreading API error:', err.message);
+    return Response.json({ error: `Failed to extract text: ${err.message}` }, { status: 500 });
+}
+
 }

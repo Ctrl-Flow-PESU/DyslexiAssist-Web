@@ -63,9 +63,9 @@ export default function ProofreadingPage() {
       <div className="max-w-4xl mx-auto space-y-6">
         <h1 className="text-3xl font-bold">Notes Proofreading</h1>
         
-        <Card>
-          <CardHeader>
-            <CardTitle>Upload Image</CardTitle>
+        <Card className="">
+          <CardHeader className="">
+            <CardTitle className="">Upload Image</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex flex-col items-center gap-4">
@@ -119,11 +119,11 @@ export default function ProofreadingPage() {
         </Card>
 
         {result?.accuracyAnalysis && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Accuracy Analysis</CardTitle>
+          <Card className="">
+            <CardHeader className="">
+              <CardTitle className="">Accuracy Analysis</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="">
               <div className="p-4 bg-muted rounded-lg whitespace-pre-wrap">
                 {result.accuracyAnalysis}
               </div>
