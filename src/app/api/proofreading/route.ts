@@ -1,8 +1,5 @@
-import { vision } from '@google-cloud/vision';
 import { Groq } from "groq-sdk";
 
-// Initialize the client using the environment variable
-const client = new vision.ImageAnnotatorClient();
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY!,
 });
@@ -12,18 +9,33 @@ export async function POST(request: Request) {
     const { imageUrl } = await request.json();
     
     if (!imageUrl) {
-      throw new Error('No image URL provided');
+      return Response.json({ error: 'No image data provided' }, { status: 400 });
     }
 
-    const base64Data = imageUrl.split(',')[1];
-
-    // 🧠 Step 1: Google Vision OCR
-    const [visionResponse] = await client.textDetection({
-      image: { content: Buffer.from(base64Data, 'base64') },
+    const visionResponse = await groq.chat.completions.create({
+      model: "meta-llama/llama-4-scout-17b-16e-instruct",
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: "Please extract all the text from this image."
+            },
+            {
+              type: "image_url",
+              image_url: {
+                url: `data:image/jpeg;base64,${imageUrl}`
+              }
+            }
+          ]
+        }
+      ],
+      temperature: 0.2,
+      max_tokens: 2048,
     });
 
-    const textAnnotations = visionResponse.textAnnotations;
-    const extractedText = textAnnotations?.[0]?.description?.trim() || '';
+    const extractedText = visionResponse.choices[0]?.message?.content?.trim() || '';
 
     if (!extractedText) {
       throw new Error('No text extracted from the image');
@@ -33,11 +45,11 @@ export async function POST(request: Request) {
 
     // 🧠 Step 2: Groq grammar correction
     const grammarFix = await groq.chat.completions.create({
-      model: "meta-llama/llama-4-maverick-32k",
+      model: "llama-3.3-70b-versatile",
       messages: [
         {
           role: "user",
-          content: "Please proofread and correct the following text for grammar, spelling, and clarity:\n\n${extractedText}"
+          content: `Please proofread and correct the following text for grammar, spelling, and clarity:\n\n${extractedText}`
         }
       ],
       temperature: 0.2,
@@ -51,8 +63,10 @@ export async function POST(request: Request) {
 
   } catch (error) {
     const err = error as Error;
-    console.error('Proofreading API error:', err.message);
-    return Response.json({ error: `Failed to extract text: ${err.message}` }, { status: 500 });
-}
-
+    console.error('Proofreading API error:', err);
+    return Response.json(
+      { error: `Failed to extract text: ${err.message}` }, 
+      { status: 500 }
+    );
+  }
 }

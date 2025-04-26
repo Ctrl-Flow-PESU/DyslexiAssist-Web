@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { SetStateAction, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,13 +19,11 @@ export default function ProofreadingPage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Convert to base64
     const reader = new FileReader();
     reader.onloadend = async () => {
-      const base64String = reader.result as string;
-      setImageUrl(base64String);
-      
-      // Automatically start extraction when image is loaded
+      // Extract only the base64 data part, remove the data URL prefix
+      const base64String = (reader.result as string).split(',')[1];
+      setImageUrl(reader.result as string); // Keep full URL for display
       await handleExtractText(base64String);
     };
     reader.readAsDataURL(file);
@@ -44,15 +42,18 @@ export default function ProofreadingPage() {
         }),
       });
       
+      const data = await response.json();
+      
       if (!response.ok) {
-        throw new Error('Failed to extract text');
+        throw new Error(data.error || 'Failed to extract text');
       }
 
-      const data = await response.json();
       setResult(data);
       setText(data.extractedText);
     } catch (error) {
       console.error('Text extraction failed:', error);
+      // Show error to user
+      setText(`Error: ${error instanceof Error ? error.message : 'Failed to process image'}`);
     } finally {
       setIsLoading(false);
     }
@@ -112,7 +113,7 @@ export default function ProofreadingPage() {
               placeholder="Extracted text will appear here..."
               className="min-h-[200px]"
               value={text}
-              onChange={(e) => setText(e.target.value)}
+              onChange={(e: { target: { value: SetStateAction<string>; }; }) => setText(e.target.value)}
               readOnly={isLoading}
             />
           </CardContent>
