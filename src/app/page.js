@@ -5,6 +5,35 @@ import { Button } from "@/components/ui/button";
 import { NavigationMenu, NavigationMenuList, NavigationMenuItem } from "@/components/ui/navigation-menu";
 import Link from "next/link";
 import { FileText, Eye, Headphones, FileEdit, FolderOpen } from "lucide-react";
+import Image from 'next/image';
+
+// Add team members data
+const teamMembers = [
+  {
+    "name": "Rithvik A M",
+    "role": "Fullstack Developer",
+    "description": "Contributed across frontend, backend, and AI integration, ensuring a seamless and accessible user experience through collaborative development.",
+    "image": "/Rithvik.jpg"
+  },
+  {
+    "name": "Chatresh Ramasai Gudi",
+    "role": "Fullstack Developer",
+    "description": "Worked across the technology stack, focusing on building accessible interfaces, integrating AI-driven features, and optimizing application performance.",
+    "image": "/Chatresh.jpg"
+  },
+  {
+    "name": "Arvind Kothamangala",
+    "role": "Fullstack Developer",
+    "description": "Actively contributed to both frontend and backend development, improving usability, accessibility, and overall system design through hands-on collaboration.",
+    "image": "/Arvind.jpg"
+  },
+  {
+    "name": "Aamer Khan",
+    "role": "Fullstack Developer",
+    "description": "Participated in end-to-end development including frontend design, backend architecture, and AI feature implementation, emphasizing user accessibility.",
+    "image": "/Aamer.jpg"
+  }
+];
 
 export default function Home() {
   const features = [
@@ -81,6 +110,36 @@ export default function Home() {
                 </Link>
               </Card>
             ))}
+          </section>
+
+          {/* Add Team Section */}
+          <section className="py-16">
+            <h2 className="text-3xl font-bold text-center mb-12">Meet the Team</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {teamMembers.map((member) => (
+                <Card 
+                  key={member.name}
+                  className="text-center transition-all duration-300 hover:border-primary/50"
+                >
+                  <CardContent className="pt-6">
+                    <div className="relative w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden">
+                      <Image
+                        src={member.image}
+                        alt={member.name}
+                        fill
+                        style={{ objectFit: 'cover' }}
+                        className="rounded-full"
+                      />
+                    </div>
+                    <CardTitle className="text-xl mb-2">{member.name}</CardTitle>
+                    <p className="text-primary font-medium mb-2">{member.role}</p>
+                    <CardDescription className="text-sm">
+                      {member.description}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </section>
         </main>
 
