@@ -65,7 +65,7 @@ export default function ReadingTest() {
         setRecognition(recognitionInstance);
       }
     }
-  }, []);
+  }, []); // Remove stopListening from dependencies since it's not needed
 
   const startListening = () => {
     if (recognition) {
@@ -158,7 +158,7 @@ ${data.errors.length > 0 ? 'Areas to improve:\n' + data.errors.join('\n') : 'No 
           <div className="space-y-2">
             <h1 className="text-4xl font-bold tracking-tight">Reading Test</h1>
             <p className="text-muted-foreground text-xl leading-relaxed">
-              Select a level and read the text below aloud. Click "Done Reading" when finished.
+              Select a level and read the text below aloud. Click &quot;Done Reading&quot; when finished.
             </p>
           </div>
         </header>

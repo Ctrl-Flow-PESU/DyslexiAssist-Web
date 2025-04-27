@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Upload, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import Image from 'next/image';
 
 export default function ProofreadingPage() {
   const [text, setText] = useState('');
@@ -102,10 +103,13 @@ export default function ProofreadingPage() {
               
               {imageUrl && (
                 <div className="w-full">
-                  <img 
+                  <Image 
                     src={imageUrl} 
                     alt="Uploaded image" 
+                    width={800}
+                    height={300}
                     className="max-h-[300px] w-auto mx-auto rounded-lg"
+                    style={{ objectFit: 'contain' }}
                   />
                 </div>
               )}

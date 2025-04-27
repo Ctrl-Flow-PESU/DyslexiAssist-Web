@@ -19,19 +19,7 @@ const createSpeech = (text: string, speechRate: number): SpeechSynthesisUtteranc
 const DEFAULT_SPEECH_RATE = 1.0;
 
 export const useVoiceCommands = (): VoiceCommandsState => {
-  // Try to get settings, but provide fallback if hook is used outside provider
-  let speechRate = DEFAULT_SPEECH_RATE;
-  let accessibilityContext: AccessibilityContextType | null = null;
-  
-  try {
-    accessibilityContext = useAccessibility();
-    if (accessibilityContext && accessibilityContext.settings) {
-      speechRate = accessibilityContext.settings.speechRate;
-    }
-  } catch (error) {
-    console.warn("useVoiceCommands used outside AccessibilityProvider, using default speech rate");
-  }
-  
+  const accessibilityContext = useAccessibility();
   const [isListening, setIsListening] = useState(false);
   const router = useRouter();
   const recognition = useRef<SpeechRecognition | null>(null);
@@ -146,7 +134,7 @@ export const useVoiceCommands = (): VoiceCommandsState => {
       );
       window.speechSynthesis.speak(errorSpeech);
     }
-  }, [router, accessibilityContext]);
+  }, [router, getSpeechRate]);
 
   const startListening = useCallback(() => {
     if (recognition.current && !isListening) {
@@ -167,7 +155,7 @@ export const useVoiceCommands = (): VoiceCommandsState => {
         console.error('Error starting voice recognition:', error);
       }
     }
-  }, [isListening, processCommand]);
+  }, [isListening, getSpeechRate, processCommand]);
 
   const stopListening = useCallback(() => {
     if (recognition.current && isListening) {
@@ -177,7 +165,7 @@ export const useVoiceCommands = (): VoiceCommandsState => {
       const stopSpeech = createSpeech('Voice commands stopped', getSpeechRate());
       window.speechSynthesis.speak(stopSpeech);
     }
-  }, [isListening]);
+  }, [isListening, getSpeechRate]);
 
   return {
     isListening,

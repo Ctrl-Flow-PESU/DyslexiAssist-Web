@@ -91,7 +91,20 @@ export default function Home() {
           <NavigationMenu className="w-full">
             <NavigationMenuList>
               <NavigationMenuItem>
-                <h1 className={`text-3xl font-bold pt-4 ${textStyle}`}>DyslexiAssist</h1>
+                {/* Logo placeholder, replace with <Logo /> if you have a component */}
+                <div className="flex items-center gap-2">
+                  <div className="relative w-10 h-10">
+                    <Image
+                      src="/logo.png"
+                      alt="DyslexiAssist Logo"
+                      width={40}
+                      height={40}
+                      className="object-contain rounded"
+                      priority
+                    />
+                  </div>
+                  <h1 className={`text-3xl font-bold pt-4 ${textStyle}`}>DyslexiAssist</h1>
+                </div>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
@@ -160,7 +173,7 @@ export default function Home() {
 
         <footer className="mt-12 text-center text-base">
           <p className={settings?.highContrast ? "text-white" : "text-muted-foreground"}>
-            © 2025 DyslexiAssist. Making reading accessible for everyone.
+            © 2025 DyslexiAssist. Turning Challenges into Confidence.
           </p>
         </footer>
       </div>

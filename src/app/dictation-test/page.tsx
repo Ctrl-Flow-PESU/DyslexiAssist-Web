@@ -28,7 +28,7 @@ export default function DictationTest() {
       setSpeech(utterance);
       generateText(level);
     }
-  }, []);
+  }, [level]); // Add level to dependency array
 
   const generateText = async (difficulty: string) => {
     setIsLoading(true);
