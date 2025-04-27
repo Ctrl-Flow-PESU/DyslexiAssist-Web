@@ -44,15 +44,6 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
   }, [settings]);
 
   const applySettings = (settings: AccessibilitySettings) => {
-<<<<<<< HEAD
-    const root = document.documentElement;
-
-    // Apply font size, line spacing, and letter spacing globally
-    root.style.setProperty('--font-size', `${settings.fontSize}%`);
-    root.style.setProperty('--line-spacing', settings.lineSpacing.toString());
-    root.style.setProperty('--letter-spacing', `${settings.letterSpacing}px`);
-
-=======
     // Apply font size - set both CSS variable and inline styles
     document.documentElement.style.setProperty('--font-scale', `${settings.fontSize}%`);
     
@@ -75,19 +66,11 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
     // Apply speech rate
     document.documentElement.style.setProperty('--speech-rate', settings.speechRate.toString());
     
->>>>>>> b7855126dbcd7f0b3a11cb8a31d9763247d22b51
     // Apply high contrast mode
     if (settings.highContrast) {
-      root.classList.add('high-contrast');
+      document.documentElement.classList.add('high-contrast');
     } else {
-      root.classList.remove('high-contrast');
-    }
-
-    // Apply font family
-    if (settings.useOpenDyslexic) {
-      root.style.setProperty('--font-family', "'OpenDyslexic', sans-serif");
-    } else {
-      root.style.setProperty('--font-family', "inherit");
+      document.documentElement.classList.remove('high-contrast');
     }
     
     // Apply font family
@@ -107,7 +90,7 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
   };
 
   const updateSettings = (newSettings: Partial<AccessibilitySettings>) => {
-    setSettings((prev) => ({ ...prev, ...newSettings }));
+    setSettings(prev => ({ ...prev, ...newSettings }));
   };
 
   return (
