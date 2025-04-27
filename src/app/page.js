@@ -10,29 +10,29 @@ import Image from 'next/image';
 // Add team members data
 const teamMembers = [
   {
-    "name": "Rithvik A M",
-    "role": "Fullstack Developer",
-    "description": "Contributed across frontend, backend, and AI integration, ensuring a seamless and accessible user experience through collaborative development.",
-    "image": "/Rithvik.jpg"
-  },
-  {
-    "name": "Chatresh Ramasai Gudi",
-    "role": "Fullstack Developer",
-    "description": "Worked across the technology stack, focusing on building accessible interfaces, integrating AI-driven features, and optimizing application performance.",
-    "image": "/Chatresh.jpg"
-  },
-  {
-    "name": "Arvind Kothamangala",
-    "role": "Fullstack Developer",
-    "description": "Actively contributed to both frontend and backend development, improving usability, accessibility, and overall system design through hands-on collaboration.",
-    "image": "/Arvind.jpg"
-  },
-  {
-    "name": "Aamer Khan",
-    "role": "Fullstack Developer",
-    "description": "Participated in end-to-end development including frontend design, backend architecture, and AI feature implementation, emphasizing user accessibility.",
-    "image": "/Aamer.jpg"
-  }
+      "name": "Rithvik A M",
+      "role": "Fullstack Developer",
+      "description": "Contributed across frontend, backend, and AI integration, ensuring a seamless and accessible user experience through collaborative development.",
+      "image": "/Rithvik.jpg"
+    },
+    {
+      "name": "Chatresh Ramasai Gudi",
+      "role": "Fullstack Developer",
+      "description": "Worked across the technology stack, focusing on building accessible interfaces, integrating AI-driven features, and optimizing application performance.",
+      "image": "/Chatresh.jpg"
+    },
+    {
+      "name": "Arvind Kothamangala",
+      "role": "Fullstack Developer",
+      "description": "Actively contributed to both frontend and backend development, improving usability, accessibility, and overall system design through hands-on collaboration.",
+      "image": "/Arvind.jpg"
+    },
+    {
+      "name": "Aamer Khan",
+      "role": "Fullstack Developer",
+      "description": "Participated in end-to-end development including frontend design, backend architecture, and AI feature implementation, emphasizing user accessibility.",
+      "image": "/Aamer.jpg"
+    }
 ];
 
 export default function Home() {
