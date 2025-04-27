@@ -14,6 +14,8 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, PlayCircle, StopCircle } from "lucide-react";
 import Link from "next/link";
+import { Slider } from "@/components/ui/slider";
+import { useAccessibility } from "@/contexts/AccessibilityContext";
 
 type ReadingLevel = "Level 1" | "Level 2" | "Level 3";
 
@@ -34,14 +36,20 @@ const readingTexts: Record<ReadingLevel, ReadingText[]> = {
 };
 
 export default function ReadingTest() {
+  const { settings, updateSettings } = useAccessibility();
   const [mounted, setMounted] = useState(false);
   const [level, setLevel] = useState<ReadingLevel>("Level 1");
   const [isReading, setIsReading] = useState(false);
-  const [readingSpeed, setReadingSpeed] = useState(0);
+  const [readingSpeed, setReadingSpeed] = useState(settings.speechRate);
   const [startTime, setStartTime] = useState<number | null>(null);
   const [speech, setSpeech] = useState<SpeechSynthesisUtterance | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [generatedText, setGeneratedText] = useState("");
+
+  // Update local state when global settings change
+  useEffect(() => {
+    setReadingSpeed(settings.speechRate);
+  }, [settings.speechRate]);
 
   useEffect(() => {
     setMounted(true);
@@ -108,7 +116,7 @@ export default function ReadingTest() {
       
       // Configure speech
       speech.text = generatedText || readingTexts[level][0].text;
-      speech.rate = 1.0; // Normal speed
+      speech.rate = readingSpeed; // Use the reading speed from state
       speech.pitch = 1.0; // Normal pitch
       speech.volume = 1.0; // Full volume
       
@@ -124,6 +132,19 @@ export default function ReadingTest() {
       window.speechSynthesis.cancel();
     }
     setStartTime(null);
+  };
+
+  const handleSpeedChange = (value: number[]) => {
+    const newRate = value[0];
+    setReadingSpeed(newRate);
+    // Update global speech rate setting
+    updateSettings({ speechRate: newRate });
+    
+    // If currently reading, update the speech rate without restarting
+    if (isReading && speech && window.speechSynthesis) {
+      // Update rate without canceling current speech
+      speech.rate = newRate;
+    }
   };
 
   return (
@@ -175,6 +196,25 @@ export default function ReadingTest() {
               </ScrollArea>
 
               <div className="space-y-4">
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <h3 className="text-sm font-medium">Reading Speed ({readingSpeed.toFixed(1)}x)</h3>
+                  </div>
+                  <Slider
+                    defaultValue={[readingSpeed]}
+                    value={[readingSpeed]}
+                    onValueChange={handleSpeedChange}
+                    min={0.5}
+                    max={2.0}
+                    step={0.1}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>Slower (0.5x)</span>
+                    <span>Faster (2.0x)</span>
+                  </div>
+                </div>
+
                 <div className="flex justify-between items-center">
                   <Button
                     onClick={isReading ? handleStopReading : handleStartReading}

@@ -9,7 +9,7 @@ interface AccessibilitySettings {
   useOpenDyslexic: boolean;
 }
 
-interface AccessibilityContextType {
+export interface AccessibilityContextType {
   settings: AccessibilitySettings;
   updateSettings: (newSettings: Partial<AccessibilitySettings>) => void;
 }

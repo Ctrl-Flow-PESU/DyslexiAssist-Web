@@ -4,6 +4,7 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 export class VoiceCommands {
   private recognition!: any;
   private isListening: boolean = false;
+  private speechRate: number = 1.0;
   
   constructor() {
     if ('webkitSpeechRecognition' in window) {
@@ -12,16 +13,44 @@ export class VoiceCommands {
     } else {
       console.error('Speech recognition not supported');
     }
+    
+    // Try to get speech rate from local storage
+    try {
+      const savedSettings = localStorage.getItem('accessibilitySettings');
+      if (savedSettings) {
+        const settings = JSON.parse(savedSettings);
+        if (settings.speechRate) {
+          this.speechRate = settings.speechRate;
+        }
+      }
+    } catch (e) {
+      console.error('Error reading speech rate from settings:', e);
+    }
+    
+    // Listen for changes in accessibility settings
+    document.addEventListener('accessibilityChanged', (e: any) => {
+      if (e.detail && typeof e.detail.speechRate === 'number') {
+        this.speechRate = e.detail.speechRate;
+      }
+    });
   }
 
   private setupRecognition() {
     this.recognition.continuous = true;
-    this.recognition.interimResults = true;
+    this.recognition.interimResults = false;
     this.recognition.lang = 'en-US';
 
-    this.recognition.onresult = (event: SpeechRecognitionEvent) => {
-      const command = event.results[event.results.length - 1][0].transcript.toLowerCase();
+    this.recognition.onresult = (event: any) => {
+      const command = event.results[event.results.length - 1][0].transcript;
       this.processCommand(command);
+    };
+
+    this.recognition.onstart = () => {
+      this.isListening = true;
+    };
+
+    this.recognition.onend = () => {
+      this.isListening = false;
     };
   }
 
@@ -41,15 +70,17 @@ export class VoiceCommands {
 
   public startListening() {
     if (!this.isListening) {
-      this.recognition.start();
-      this.isListening = true;
+      try {
+        this.recognition.start();
+      } catch (error) {
+        console.error('Error starting speech recognition:', error);
+      }
     }
   }
 
   public stopListening() {
     if (this.isListening) {
       this.recognition.stop();
-      this.isListening = false;
     }
   }
 
@@ -62,6 +93,8 @@ export class VoiceCommands {
       Say 'contrast test' to adjust colors
       Say 'help' to hear these commands again
     `);
+    
+    speech.rate = this.speechRate;
     window.speechSynthesis.speak(speech);
   }
 }

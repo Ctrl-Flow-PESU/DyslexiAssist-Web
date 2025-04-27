@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAccessibility, AccessibilityContextType } from '@/contexts/AccessibilityContext';
 
 interface VoiceCommandsState {
   isListening: boolean;
@@ -7,32 +8,68 @@ interface VoiceCommandsState {
   stopListening: () => void;
 }
 
-type SpeechRecognitionConstructor = {
-  new (): SpeechRecognition;
-}
+// Create a helper function to create speech utterances with the correct rate
+const createSpeech = (text: string, speechRate: number): SpeechSynthesisUtterance => {
+  const speech = new SpeechSynthesisUtterance(text);
+  speech.rate = speechRate;
+  return speech;
+};
 
-declare const window: any;
+// Default speech rate to use if context is not available
+const DEFAULT_SPEECH_RATE = 1.0;
 
 export const useVoiceCommands = (): VoiceCommandsState => {
-  const router = useRouter();
+  // Try to get settings, but provide fallback if hook is used outside provider
+  let speechRate = DEFAULT_SPEECH_RATE;
+  let accessibilityContext: AccessibilityContextType | null = null;
+  
+  try {
+    accessibilityContext = useAccessibility();
+    if (accessibilityContext && accessibilityContext.settings) {
+      speechRate = accessibilityContext.settings.speechRate;
+    }
+  } catch (error) {
+    console.warn("useVoiceCommands used outside AccessibilityProvider, using default speech rate");
+  }
+  
   const [isListening, setIsListening] = useState(false);
-  const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
+  const router = useRouter();
+  const recognition = useRef<SpeechRecognition | null>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (SpeechRecognition) {
-        const recognitionInstance = new SpeechRecognition();
-        recognitionInstance.continuous = true;
-        recognitionInstance.interimResults = false;
-        recognitionInstance.lang = 'en-US';
-        setRecognition(recognitionInstance);
+      if ('SpeechRecognition' in window) {
+        recognition.current = new (window as any).SpeechRecognition();
+      } else if ('webkitSpeechRecognition' in window) {
+        recognition.current = new (window as any).webkitSpeechRecognition();
+      }
+
+      if (recognition.current) {
+        recognition.current.continuous = false;
+        recognition.current.interimResults = false;
+        recognition.current.lang = 'en-US';
+      } else {
+        console.warn('Speech recognition not supported in this browser');
       }
     }
   }, []);
 
+  const getSpeechRate = (): number => {
+    try {
+      if (accessibilityContext?.settings?.speechRate !== undefined) {
+        return accessibilityContext.settings.speechRate;
+      }
+    } catch (e) {
+      // Fallback to default if context is not available
+    }
+    return DEFAULT_SPEECH_RATE;
+  };
+
   const processCommand = useCallback(async (command: string) => {
     try {
+      // Get the current speech rate
+      const currentSpeechRate = getSpeechRate();
+
       // Handle navigation commands directly first
       const navigationCommands = {
         menu: '/',
@@ -55,7 +92,7 @@ export const useVoiceCommands = (): VoiceCommandsState => {
         const mainContent = document.querySelector('main');
         if (mainContent) {
           const textToRead = mainContent.textContent || '';
-          const speech = new SpeechSynthesisUtterance(textToRead);
+          const speech = createSpeech(textToRead, currentSpeechRate);
           window.speechSynthesis.speak(speech);
           return;
         }
@@ -63,8 +100,9 @@ export const useVoiceCommands = (): VoiceCommandsState => {
 
       // Handle help command directly
       if (command.toLowerCase().includes('help')) {
-        const speech = new SpeechSynthesisUtterance(
-          'Available commands: menu, reading test, dictation, contrast test, read out, and help'
+        const speech = createSpeech(
+          'Available commands: menu, reading test, dictation, contrast test, read out, and help',
+          currentSpeechRate
         );
         window.speechSynthesis.speak(speech);
         return;
@@ -93,7 +131,7 @@ export const useVoiceCommands = (): VoiceCommandsState => {
       
       // Handle API response
       if (data.action === 'speak') {
-        const speech = new SpeechSynthesisUtterance(data.text);
+        const speech = createSpeech(data.text, currentSpeechRate);
         window.speechSynthesis.speak(speech);
       } else if (data.action === 'navigate') {
         router.push(data.route);
@@ -102,43 +140,44 @@ export const useVoiceCommands = (): VoiceCommandsState => {
     } catch (error) {
       console.error('Error processing voice command:', error);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-      const errorSpeech = new SpeechSynthesisUtterance(
-        `Sorry, I could not process that command. ${errorMessage}`
+      const errorSpeech = createSpeech(
+        `Sorry, I could not process that command. ${errorMessage}`,
+        getSpeechRate()
       );
       window.speechSynthesis.speak(errorSpeech);
     }
-  }, [router]);
+  }, [router, accessibilityContext]);
 
   const startListening = useCallback(() => {
-    if (recognition && !isListening) {
-      recognition.onresult = (event: SpeechRecognitionEvent) => {
+    if (recognition.current && !isListening) {
+      recognition.current.onresult = (event: SpeechRecognitionEvent) => {
         const command = event.results[event.results.length - 1][0].transcript;
         processCommand(command);
       };
 
-      recognition.onstart = () => setIsListening(true);
-      recognition.onend = () => setIsListening(false);
+      recognition.current.onstart = () => setIsListening(true);
+      recognition.current.onend = () => setIsListening(false);
 
       try {
-        recognition.start();
+        recognition.current.start();
         // Provide feedback when voice recognition starts
-        const startSpeech = new SpeechSynthesisUtterance('Listening for commands');
+        const startSpeech = createSpeech('Listening for commands', getSpeechRate());
         window.speechSynthesis.speak(startSpeech);
       } catch (error) {
         console.error('Error starting voice recognition:', error);
       }
     }
-  }, [recognition, isListening, processCommand]);
+  }, [isListening, processCommand]);
 
   const stopListening = useCallback(() => {
-    if (recognition && isListening) {
-      recognition.stop();
+    if (recognition.current && isListening) {
+      recognition.current.stop();
       setIsListening(false);
       // Provide feedback when voice recognition stops
-      const stopSpeech = new SpeechSynthesisUtterance('Voice commands stopped');
+      const stopSpeech = createSpeech('Voice commands stopped', getSpeechRate());
       window.speechSynthesis.speak(stopSpeech);
     }
-  }, [recognition, isListening]);
+  }, [isListening]);
 
   return {
     isListening,
