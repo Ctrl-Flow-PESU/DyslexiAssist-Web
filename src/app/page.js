@@ -5,8 +5,11 @@ import { Button } from "@/components/ui/button";
 import { NavigationMenu, NavigationMenuList, NavigationMenuItem } from "@/components/ui/navigation-menu";
 import Link from "next/link";
 import { FileText, Eye, Headphones, FileEdit, FolderOpen } from "lucide-react";
+import { useAccessibility } from "@/contexts/AccessibilityContext";
 
 export default function Home() {
+  const { settings } = useAccessibility();
+  
   const features = [
     {
       title: "Reading Tests",
@@ -40,14 +43,26 @@ export default function Home() {
     }
   ];
 
+  // Define styles for high contrast mode
+  const cardStyle = settings?.highContrast 
+    ? "bg-black border-2 border-white transition-all duration-300 hover:border-primary"
+    : "transition-all duration-300 hover:border-primary/50";
+  
+  const textStyle = settings?.highContrast ? "text-white" : "";
+  const iconContainerStyle = settings?.highContrast ? "p-2.5 w-fit rounded-md bg-black border border-white mb-4" : "p-2.5 w-fit rounded-md bg-primary/5 mb-4";
+  const iconStyle = settings?.highContrast ? "text-white" : "";
+  const buttonStyle = settings?.highContrast 
+    ? "w-full text-base py-3 text-white hover:bg-gray-900"
+    : "w-full text-base py-3";
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 font-['OpenDyslexic']">
       <div className="max-w-7xl mx-auto px-6">
-        <header className="py-12"> {/* Changed mb-8 to py-12 for more vertical spacing */}
+        <header className="py-12">
           <NavigationMenu className="w-full">
             <NavigationMenuList>
               <NavigationMenuItem>
-                <h1 className="text-3xl font-bold pt-4">DyslexiAssist</h1> {/* Added pt-4 for top padding */}
+                <h1 className={`text-3xl font-bold pt-4 ${textStyle}`}>DyslexiAssist</h1>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
@@ -58,22 +73,22 @@ export default function Home() {
             {features.map((feature) => (
               <Card 
                 key={feature.title} 
-                className="transition-all duration-300 hover:border-primary/50"
+                className={cardStyle}
               >
                 <Link href={feature.href}>
                   <CardHeader className="p-6">
-                    <div className="p-2.5 w-fit rounded-md bg-primary/5 mb-4">
-                      {feature.icon}
+                    <div className={iconContainerStyle}>
+                      <div className={iconStyle}>{feature.icon}</div>
                     </div>
-                    <CardTitle className="text-xl mb-3">{feature.title}</CardTitle>
-                    <CardDescription className="text-base leading-relaxed">
+                    <CardTitle className={`text-xl mb-3 ${textStyle}`}>{feature.title}</CardTitle>
+                    <CardDescription className={`text-base leading-relaxed ${settings?.highContrast ? 'text-gray-300' : ''}`}>
                       {feature.description}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="p-6 pt-0">
                     <Button 
-                      variant="ghost" 
-                      className="w-full text-base py-3"
+                      variant={settings?.highContrast ? "outline" : "ghost"}
+                      className={buttonStyle}
                     >
                       Get Started →
                     </Button>
@@ -84,8 +99,10 @@ export default function Home() {
           </section>
         </main>
 
-        <footer className="mt-12 text-center text-muted-foreground text-base">
-          <p>© 2025 DyslexiAssist. Making reading accessible for everyone.</p>
+        <footer className="mt-12 text-center text-base">
+          <p className={settings?.highContrast ? "text-white" : "text-muted-foreground"}>
+            © 2025 DyslexiAssist. Making reading accessible for everyone.
+          </p>
         </footer>
       </div>
     </div>

@@ -58,7 +58,7 @@ export default function SettingsPanel() {
           title="Accessibility Settings"
           onClick={() => setIsOpen(true)}
         >
-          <SettingsIcon className="h-5 w-5" />
+          <SettingsIcon className={`h-5 w-5 ${settings.highContrast ? 'text-white stroke-[2px]' : ''}`} />
         </Button>
       </SheetTrigger>
       <SheetContent className={`settings-panel ${settings.highContrast ? 'bg-black text-white border-white' : 'bg-white'}`}>
@@ -162,7 +162,7 @@ export default function SettingsPanel() {
 
           <div className="flex items-center justify-between py-2">
             <Label className={`settings-label ${textColorClass}`}>
-              High Contrast
+              High Contrast <span className="italic">(Beta)</span>
             </Label>
             <Switch
               className="bg-transparent"
