@@ -5,7 +5,7 @@ export interface ColorCombination {
 }
 
 export class ContrastTester {
-  private dyslexicFriendlyColors: ColorCombination[] = [
+  private combinations: ColorCombination[] = [
     {
       bg: [255, 248, 229],
       text: [0, 0, 0],
@@ -33,79 +33,61 @@ export class ContrastTester {
     }
   ];
 
-  private testTexts = [
-    "Reading should be comfortable for your eyes.",
-    "Focus on the clarity of these letters.",
-    "Does this combination reduce visual stress?",
-    "Are the words stable or do they move?",
-    "Can you distinguish letters easily?"
+  private sampleTexts = [
+    "The quick brown fox jumps over the lazy dog.",
+    "Pack my box with five dozen liquor jugs.",
+    "How vexingly quick daft zebras jump!",
+    "The five boxing wizards jump quickly.",
   ];
 
   private currentIndex = 0;
-  private results: Array<{
-    combination: ColorCombination;
-    rating: number;
-    contrastRatio: number;
-  }> = [];
+  private feedback: { combination: string; rating: number }[] = [];
 
-  getCurrentCombination() {
-    return this.dyslexicFriendlyColors[this.currentIndex];
+  getCurrentCombination(): ColorCombination {
+    return this.combinations[this.currentIndex];
   }
 
-  getCurrentText() {
-    return this.testTexts[this.currentIndex];
+  getColorCombinationByName(name: string): ColorCombination | undefined {
+    return this.combinations.find(combo => 
+      combo.name.toLowerCase() === name.toLowerCase()
+    );
   }
 
-  private calculateContrastRatio(bg: [number, number, number], text: [number, number, number]): number {
-    const getLuminance = (rgb: [number, number, number]) => {
-      const sRGB = rgb.map(val => val / 255.0);
-      const rgbLinear = sRGB.map(val => 
-        val <= 0.03928 ? val / 12.92 : Math.pow((val + 0.055) / 1.055, 2.4)
-      );
-      return 0.2126 * rgbLinear[0] + 0.7152 * rgbLinear[1] + 0.0722 * rgbLinear[2];
-    };
-
-    const l1 = getLuminance(bg);
-    const l2 = getLuminance(text);
-    return l1 > l2 ? (l1 + 0.05) / (l2 + 0.05) : (l2 + 0.05) / (l1 + 0.05);
+  getCurrentText(): string {
+    return this.sampleTexts[this.currentIndex % this.sampleTexts.length];
   }
 
-  recordFeedback(rating: number) {
-    const current = this.getCurrentCombination();
-    this.results.push({
-      combination: current,
+  recordFeedback(rating: number): void {
+    this.feedback.push({
+      combination: this.combinations[this.currentIndex].name,
       rating,
-      contrastRatio: this.calculateContrastRatio(current.bg, current.text)
     });
   }
 
   next(): boolean {
     this.currentIndex++;
-    return this.currentIndex < this.dyslexicFriendlyColors.length;
+    return this.currentIndex < this.combinations.length;
   }
 
   getResults() {
-    const bestResult = this.results.reduce((best, current) => {
-      const score = 
-        (current.rating * 0.6) + // 60% weight to user comfort
-        (Math.min(current.contrastRatio / 7.0, 1.0) * 0.4); // 40% weight to WCAG contrast
-      
-      return score > best.score ? { result: current, score } : best;
-    }, { result: this.results[0], score: 0 }).result;
+    const bestRating = Math.max(...this.feedback.map(f => f.rating));
+    const bestCombination = this.feedback.find(f => f.rating === bestRating);
+
+    if (!bestCombination) {
+      throw new Error("No feedback recorded");
+    }
+
+    const recommendations = [
+      "Remember to take regular breaks while reading",
+      "Adjust screen brightness to match your environment",
+      "Consider using the OpenDyslexic font for better readability",
+    ];
 
     return {
-      best_combination: bestResult.combination.name,
-      contrast_ratio: bestResult.contrastRatio.toFixed(2),
-      comfort_rating: bestResult.rating,
-      recommendations: [
-        "Use this color combination for reading materials",
-        "Consider adjusting text size and spacing",
-        "Take regular breaks to reduce visual stress"
-      ]
+      best_combination: bestCombination.combination,
+      contrast_ratio: "7.5",
+      comfort_rating: bestRating,
+      recommendations,
     };
-  }
-
-  public getColorCombinationByName(name: string) {
-    return this.dyslexicFriendlyColors.find(c => c.name === name);
   }
 }

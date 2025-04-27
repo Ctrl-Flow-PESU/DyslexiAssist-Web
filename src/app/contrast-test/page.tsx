@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { ContrastTester } from "@/lib/ContrastTester";
+import { ContrastTester, ColorCombination } from "@/lib/ContrastTester";
 import { useTheme } from "@/contexts/ThemeContext";
 import Link from "next/link";
 
@@ -31,7 +31,7 @@ export default function ContrastTest() {
     results: null
   });
   const [comfort, setComfort] = useState(5);
-  const [currentCombo, setCurrentCombo] = useState<any>(null);
+  const [currentCombo, setCurrentCombo] = useState<ColorCombination | null>(null);
   const [currentText, setCurrentText] = useState("");
 
   useEffect(() => {
@@ -67,8 +67,8 @@ export default function ContrastTest() {
   };
 
   const getBackgroundStyle = () => ({
-    backgroundColor: `rgb(${currentCombo.bg.join(",")})`,
-    color: `rgb(${currentCombo.text.join(",")})`,
+    backgroundColor: `rgb(${currentCombo!.bg.join(",")})`,
+    color: `rgb(${currentCombo!.text.join(",")})`,
   });
 
   if (state.completed && state.results) {
@@ -90,8 +90,8 @@ export default function ContrastTest() {
             </div>
             <div className="flex flex-col gap-4 mt-6">
               <Button 
-                variant="filled"
-                size="md"
+                variant="default"
+                size="lg"
                 onClick={() => {
                   const bestCombo = tester.getColorCombinationByName(state.results!.best_combination);
                   if (bestCombo) {
@@ -105,8 +105,8 @@ export default function ContrastTest() {
               <Link href="/" className="w-full">
                 <Button 
                   variant="outline"
+                  size="lg"
                   className="w-full"
-                  size = ""
                 >
                   Back to Home
                 </Button>
@@ -142,7 +142,7 @@ export default function ContrastTest() {
             </div>
             
             <div>
-              <p className="mb-2">Current combination: {currentCombo.name}</p>
+              <p className="mb-2">Current combination: {currentCombo!.name}</p>
               <p className="mb-4">How comfortable is this combination for reading?</p>
               <div className="space-y-6">
                 <div className="flex items-center gap-4">

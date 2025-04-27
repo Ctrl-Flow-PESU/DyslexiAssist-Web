@@ -16,28 +16,42 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
   const [colors, setColorsState] = useState({
-    background: "rgb(255, 248, 229)", // Cream background
-    text: "rgb(0, 0, 0)", // Black text
+    background: "rgb(255, 248, 229)", // Default cream background
+    text: "rgb(0, 0, 0)", // Default black text
   });
 
   useEffect(() => {
+    // Initialize from localStorage if available
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('themeColors');
+      if (saved) {
+        const savedColors = JSON.parse(saved);
+        setColorsState(savedColors);
+        document.body.style.backgroundColor = savedColors.background;
+        document.body.style.color = savedColors.text;
+      }
+    }
     setMounted(true);
-    // Apply initial styles to document body
-    document.body.style.backgroundColor = colors.background;
-    document.body.style.color = colors.text;
   }, []);
 
   const setColors = (bg: [number, number, number], text: [number, number, number]) => {
     const newBg = `rgb(${bg.join(",")})`;
     const newText = `rgb(${text.join(",")})`;
-    setColorsState({
+    const newColors = {
       background: newBg,
       text: newText,
-    });
-    // Apply styles to document body
+    };
+    
+    setColorsState(newColors);
+    localStorage.setItem('themeColors', JSON.stringify(newColors));
     document.body.style.backgroundColor = newBg;
     document.body.style.color = newText;
   };
+
+  // Don't render until mounted to prevent hydration mismatch
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <ThemeContext.Provider value={{ colors, setColors, mounted }}>
