@@ -90,25 +90,28 @@
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
-}
-
-/* Add these custom properties */
-:root {
   --font-scale: 100%;
   --line-height: 1.5;
   --letter-spacing: 0px;
 }
 
-/* Add high contrast theme */
+html {
+  font-size: var(--font-size, 100%);
+  line-height: var(--line-spacing, 1.5);
+  letter-spacing: var(--letter-spacing, 0px);
+  font-family: var(--font-family, inherit);
+}
+
 .high-contrast {
   --background: #000000;
   --foreground: #FFFFFF;
   --primary: #FFFF00;
   --primary-foreground: #000000;
   filter: contrast(150%);
+  background-color: black;
+  color: white;
 }
 
-/* Add dynamic text styling */
 .dyslexia-friendly {
   font-size: var(--font-scale);
   line-height: var(--line-height);
