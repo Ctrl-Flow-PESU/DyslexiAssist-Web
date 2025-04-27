@@ -7,8 +7,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, PlayCircle, CheckCircle } from "lucide-react";
 import Link from "next/link";
+import { useAccessibility } from "@/contexts/AccessibilityContext";
 
 export default function DictationTest() {
+  const { settings } = useAccessibility();
   const [mounted, setMounted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -59,7 +61,7 @@ export default function DictationTest() {
       window.speechSynthesis.cancel();
       
       speech.text = currentText;
-      speech.rate = 0.8; // Slightly slower for better comprehension
+      speech.rate = settings.speechRate;
       speech.pitch = 1.0;
       speech.volume = 1.0;
       

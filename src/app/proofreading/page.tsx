@@ -4,7 +4,8 @@ import { SetStateAction, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Upload } from "lucide-react";
+import { Loader2, Upload, ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 export default function ProofreadingPage() {
   const [text, setText] = useState('');
@@ -62,7 +63,15 @@ export default function ProofreadingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 p-6 font-['OpenDyslexic']">
       <div className="max-w-4xl mx-auto space-y-6">
-        <h1 className="text-3xl font-bold">Notes Proofreading</h1>
+        <header className="mb-6">
+          <Link href="/">
+            <Button variant="ghost" className="mb-6 hover:bg-muted/50" size="default">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Home
+            </Button>
+          </Link>
+          <h1 className="text-3xl font-bold">Notes Proofreading</h1>
+        </header>
         
         <Card className="">
           <CardHeader className="">

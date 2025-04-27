@@ -203,3 +203,177 @@ html {
     box-shadow: 0 0 0 0 rgba(0, 255, 0, 0);
   }
 }
+
+/* Settings panel styling */
+[data-sheet-content] {
+  background-color: white !important;
+  opacity: 1 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.high-contrast [data-sheet-content] {
+  background-color: #000000 !important;
+  color: #FFFFFF !important;
+  border-left: 2px solid #FFFFFF !important;
+}
+
+/* High contrast mode text styles */
+.high-contrast * {
+  color: #FFFFFF !important;
+}
+
+/* Menu styling */
+.high-contrast [role="menu"],
+.high-contrast [data-radix-menu-content],
+.high-contrast [data-radix-dropdown-menu-content] {
+  background-color: #000000 !important;
+  border: 2px solid #FFFFFF !important;
+  color: #FFFFFF !important;
+}
+
+/* Font controls */
+body {
+  font-size: var(--font-scale, 100%);
+  line-height: var(--line-height, 1.5);
+  letter-spacing: var(--letter-spacing, 0px);
+}
+
+/* Font family controls */
+.font-dyslexic * {
+  font-family: 'OpenDyslexic', sans-serif !important;
+}
+
+.font-sans * {
+  font-family: var(--font-sans) !important;
+}
+
+/* Apply accessibility settings to body element */
+body.dyslexia-friendly {
+  font-size: var(--font-scale, 100%);
+  line-height: var(--line-height, 1.5);
+  letter-spacing: var(--letter-spacing, 0px);
+  transition: font-size 0.3s, line-height 0.3s, letter-spacing 0.3s;
+}
+
+/* Apply font families */
+html.font-dyslexic body,
+html.font-dyslexic * {
+  font-family: 'OpenDyslexic', sans-serif !important;
+}
+
+html.font-sans body,
+html.font-sans * {
+  font-family: var(--font-sans) !important;
+}
+
+/* Fix menu visibility in high contrast mode */
+.high-contrast [role="menu"],
+.high-contrast [data-radix-menu-content],
+.high-contrast [data-radix-dropdown-menu-content] {
+  background-color: black !important;
+  color: white !important;
+  border: 2px solid white !important;
+}
+
+/* Fix menu panels to be black in high contrast mode */
+.high-contrast [data-radix-popper-content],
+.high-contrast [role="dialog"],
+.high-contrast [data-sheet-content],
+.high-contrast [role="menu"],
+.high-contrast [data-radix-menu-content],
+.high-contrast [data-radix-select-content],
+.high-contrast [data-radix-dropdown-menu-content],
+.high-contrast [data-radix-dialog-content],
+.high-contrast [data-radix-popover-content],
+.high-contrast [class*="DialogContent"],
+.high-contrast [class*="MenuContent"],
+.high-contrast [class*="DropdownContent"],
+.high-contrast [class*="PopoverContent"],
+.high-contrast [class*="tooltip"] {
+  background-color: #000000 !important;
+  color: #FFFFFF !important;
+  border: 2px solid #FFFFFF !important;
+}
+
+/* Fix settings panel spacing */
+.settings-panel {
+  width: 400px !important;
+  padding-left: 36px !important;
+  padding-right: 36px !important;
+  padding-top: 24px !important;
+  padding-bottom: 24px !important;
+}
+
+.settings-panel-title {
+  text-align: center !important;
+  margin-bottom: 32px !important;
+}
+
+/* Fix the font size scaling to apply properly */
+:root {
+  --font-scale: 100%;
+}
+
+body {
+  font-size: var(--font-scale) !important;
+  font-family: inherit !important;
+}
+
+.dyslexia-friendly {
+  font-size: var(--font-scale) !important;
+  font-family: inherit !important;
+}
+
+/* Ensure font families properly override */
+html.font-dyslexic,
+html.font-dyslexic body,
+html.font-dyslexic button,
+html.font-dyslexic input,
+html.font-dyslexic select,
+html.font-dyslexic textarea {
+  font-family: 'OpenDyslexic', sans-serif !important;
+}
+
+html.font-sans,
+html.font-sans body,
+html.font-sans button,
+html.font-sans input,
+html.font-sans select,
+html.font-sans textarea {
+  font-family: var(--font-sans) !important;
+}
+
+/* Force all menu panels to be black in high contrast mode with higher specificity */
+html.high-contrast [data-sheet-content],
+html.high-contrast [data-radix-popper-content],
+html.high-contrast [role="dialog"],
+html.high-contrast [data-radix-menu-content],
+html.high-contrast [data-radix-dropdown-menu-content],
+html.high-contrast [data-radix-popover-content],
+html.high-contrast [class*="SheetContent"],
+html.high-contrast [class*="DialogContent"],
+html.high-contrast [class*="MenuContent"],
+html.high-contrast [class*="DropdownMenuContent"],
+html.high-contrast [class*="PopoverContent"] {
+  background-color: #000000 !important;
+  color: #FFFFFF !important;
+  border: 2px solid #FFFFFF !important;
+}
+
+/* Make SheetContent explicitly black */
+.high-contrast [data-sheet-content] {
+  background-color: #000000 !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Remove any background gradients or opacity */
+.high-contrast [data-radix-popper-content],
+.high-contrast [role="dialog"] {
+  opacity: 1 !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}

@@ -7,8 +7,11 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { Slider } from "@/components/ui/slider";
+import { useAccessibility } from "@/contexts/AccessibilityContext";
 
 export default function ReadingTest() {
+<<<<<<< HEAD
   const [textToRead, setTextToRead] = useState<string | null>(null);
   const [isListening, setIsListening] = useState(false);
   const [capturedSpeech, setCapturedSpeech] = useState("");
@@ -18,6 +21,49 @@ export default function ReadingTest() {
 
   // Fetch text based on the selected level
   const fetchText = async (selectedLevel: string) => {
+=======
+  const { settings, updateSettings } = useAccessibility();
+  const [mounted, setMounted] = useState(false);
+  const [level, setLevel] = useState<ReadingLevel>("Level 1");
+  const [isReading, setIsReading] = useState(false);
+  const [readingSpeed, setReadingSpeed] = useState(settings.speechRate);
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [speech, setSpeech] = useState<SpeechSynthesisUtterance | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [generatedText, setGeneratedText] = useState("");
+
+  // Update local state when global settings change
+  useEffect(() => {
+    setReadingSpeed(settings.speechRate);
+  }, [settings.speechRate]);
+
+  useEffect(() => {
+    setMounted(true);
+    // Initialize speech synthesis
+    if (typeof window !== 'undefined') {
+      const utterance = new SpeechSynthesisUtterance();
+      // Add end event listener
+      utterance.onend = () => {
+        setIsReading(false);
+        setStartTime(null);
+      };
+      setSpeech(utterance);
+    }
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
+  if (!mounted) return null;
+
+  const generateText = async (selectedLevel: string) => {
+    setIsLoading(true);
+>>>>>>> b7855126dbcd7f0b3a11cb8a31d9763247d22b51
     try {
       const response = await fetch("/api/generate-text", {
         method: "POST",
@@ -51,6 +97,7 @@ export default function ReadingTest() {
         recognitionInstance.interimResults = false;
         recognitionInstance.lang = "en-US";
 
+<<<<<<< HEAD
         recognitionInstance.onresult = (event: SpeechRecognitionEvent) => {
           const transcript = event.results[event.results.length - 1][0].transcript;
           setCapturedSpeech((prev) => `${prev} ${transcript}`.trim());
@@ -73,6 +120,21 @@ export default function ReadingTest() {
       setFeedback(null);
       recognition.start();
       setIsListening(true);
+=======
+    // Start text-to-speech
+    if (speech && window.speechSynthesis) {
+      // Cancel any ongoing speech
+      window.speechSynthesis.cancel();
+      
+      // Configure speech
+      speech.text = generatedText || readingTexts[level][0].text;
+      speech.rate = readingSpeed; // Use the reading speed from state
+      speech.pitch = 1.0; // Normal pitch
+      speech.volume = 1.0; // Full volume
+      
+      // Start speaking
+      window.speechSynthesis.speak(speech);
+>>>>>>> b7855126dbcd7f0b3a11cb8a31d9763247d22b51
     }
   };
 
@@ -132,6 +194,19 @@ ${data.errors.length > 0 ? 'Areas to improve:\n' + data.errors.join('\n') : 'No 
     }
   };
 
+  const handleSpeedChange = (value: number[]) => {
+    const newRate = value[0];
+    setReadingSpeed(newRate);
+    // Update global speech rate setting
+    updateSettings({ speechRate: newRate });
+    
+    // If currently reading, update the speech rate without restarting
+    if (isReading && speech && window.speechSynthesis) {
+      // Update rate without canceling current speech
+      speech.rate = newRate;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 font-['OpenDyslexic']">
       <div className="max-w-6xl mx-auto p-8">
@@ -178,6 +253,51 @@ ${data.errors.length > 0 ? 'Areas to improve:\n' + data.errors.join('\n') : 'No 
               <ScrollArea className="h-[200px] rounded-md border p-6">
                 <div className="text-xl leading-relaxed">{textToRead || "Loading..."}</div>
               </ScrollArea>
+<<<<<<< HEAD
+=======
+
+              <div className="space-y-4">
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <h3 className="text-sm font-medium">Reading Speed ({readingSpeed.toFixed(1)}x)</h3>
+                  </div>
+                  <Slider
+                    defaultValue={[readingSpeed]}
+                    value={[readingSpeed]}
+                    onValueChange={handleSpeedChange}
+                    min={0.5}
+                    max={2.0}
+                    step={0.1}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>Slower (0.5x)</span>
+                    <span>Faster (2.0x)</span>
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <Button
+                    onClick={isReading ? handleStopReading : handleStartReading}
+                    className="w-full"
+                    variant={isReading ? "destructive" : "default"}
+                    size = "default"
+                  >
+                    {isReading ? (
+                      <>
+                        <StopCircle className="w-4 h-4 mr-2" />
+                        Stop Reading
+                      </>
+                    ) : (
+                      <>
+                        <PlayCircle className="w-4 h-4 mr-2" />
+                        Start Reading
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+>>>>>>> b7855126dbcd7f0b3a11cb8a31d9763247d22b51
             </CardContent>
           </Card>
 

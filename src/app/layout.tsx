@@ -1,10 +1,17 @@
 'use client';
 
 import { ThemeProvider } from "@/contexts/ThemeContext";
+<<<<<<< HEAD
 import { AccessibilityProvider, useAccessibility } from "@/contexts/AccessibilityContext";
 import { useVoiceCommands } from "@/hooks/useVoiceCommands";
 import { Mic, MicOff } from "lucide-react";
 import SettingsPanel from "@/components/SettingsPanel";
+=======
+import { AccessibilityProvider } from "@/contexts/AccessibilityContext";
+import SettingsPanel from "@/components/SettingsPanel";
+import ClientSideOnly from "@/components/ClientSideOnly";
+import VoiceCommandButton from "@/components/VoiceCommandButton";
+>>>>>>> b7855126dbcd7f0b3a11cb8a31d9763247d22b51
 import "./globals.css";
 
 function AppWrapper({ children }: { children: React.ReactNode }) {
@@ -16,15 +23,17 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { isListening, startListening, stopListening } = useVoiceCommands();
-
   return (
     <html lang="en">
+<<<<<<< HEAD
       <body suppressHydrationWarning={true}>
+=======
+      <body suppressHydrationWarning={true} className="dyslexia-friendly">
+>>>>>>> b7855126dbcd7f0b3a11cb8a31d9763247d22b51
         <div className="voice-indicator">
-          {/* Add a visual indicator when voice is active */}
           <div className="voice-indicator-dot" />
         </div>
+<<<<<<< HEAD
         <AccessibilityProvider>
           <ThemeProvider>
             <AppWrapper>
@@ -48,6 +57,17 @@ export default function RootLayout({
             <Mic className="h-6 w-6 text-white" />
           )}
         </button>
+=======
+        <ThemeProvider>
+          <AccessibilityProvider>
+            <SettingsPanel />
+            {children}
+            <ClientSideOnly>
+              <VoiceCommandButton />
+            </ClientSideOnly>
+          </AccessibilityProvider>
+        </ThemeProvider>
+>>>>>>> b7855126dbcd7f0b3a11cb8a31d9763247d22b51
       </body>
     </html>
   );
