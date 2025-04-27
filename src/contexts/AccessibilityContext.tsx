@@ -37,18 +37,56 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
   useEffect(() => {
     localStorage.setItem('accessibilitySettings', JSON.stringify(settings));
     applySettings(settings);
+    
+    // Dispatch a custom event to notify other components
+    const event = new CustomEvent('accessibilityChanged', { detail: settings });
+    document.dispatchEvent(event);
   }, [settings]);
 
   const applySettings = (settings: AccessibilitySettings) => {
+    // Apply font size - set both CSS variable and inline styles
     document.documentElement.style.setProperty('--font-scale', `${settings.fontSize}%`);
-    document.documentElement.style.setProperty('--line-height', settings.lineSpacing.toString());
-    document.documentElement.style.setProperty('--letter-spacing', `${settings.letterSpacing}px`);
     
+    // Direct DOM manipulation for font size to ensure it applies
+    const htmlElement = document.documentElement;
+    const bodyElement = document.body;
+    
+    // Apply font size directly to html and body
+    htmlElement.style.fontSize = `${settings.fontSize}%`;
+    bodyElement.style.fontSize = `${settings.fontSize}%`;
+    
+    // Apply line spacing
+    document.documentElement.style.setProperty('--line-height', settings.lineSpacing.toString());
+    bodyElement.style.lineHeight = settings.lineSpacing.toString();
+    
+    // Apply letter spacing
+    document.documentElement.style.setProperty('--letter-spacing', `${settings.letterSpacing}px`);
+    bodyElement.style.letterSpacing = `${settings.letterSpacing}px`;
+    
+    // Apply speech rate
+    document.documentElement.style.setProperty('--speech-rate', settings.speechRate.toString());
+    
+    // Apply high contrast mode
     if (settings.highContrast) {
       document.documentElement.classList.add('high-contrast');
     } else {
       document.documentElement.classList.remove('high-contrast');
     }
+    
+    // Apply font family
+    if (settings.useOpenDyslexic) {
+      document.documentElement.classList.add('font-dyslexic');
+      document.documentElement.classList.remove('font-sans');
+    } else {
+      document.documentElement.classList.remove('font-dyslexic');
+      document.documentElement.classList.add('font-sans');
+    }
+    
+    // Force a refresh on dialogs and menus by adding/removing a class
+    document.documentElement.classList.add('refresh-styles');
+    setTimeout(() => {
+      document.documentElement.classList.remove('refresh-styles');
+    }, 10);
   };
 
   const updateSettings = (newSettings: Partial<AccessibilitySettings>) => {
