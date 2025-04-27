@@ -26,47 +26,44 @@ export async function POST(request: Request) {
       }
     } else {
       // Original reading test prompts
-        switch (level) {
-          case "easy":
-            prompt = "Generate a simple paragraph suitable for elementary reading level. Use basic vocabulary and short sentences. Keep it 2-3 lines long.";
-            break;
-          case "moderate":
-            prompt = "Generate a moderate-length text suitable for intermediate reading level. Use varied vocabulary and sentence structures. Keep it 4-5 lines long.";
-            break;
-          case "hard":
-            prompt = "Generate an advanced text passage with complex sentence structures and sophisticated vocabulary. Keep it 5-6 lines long.";
-            break;
-          default:
-            prompt = "Generate a simple reading passage.";
-        }
+      switch (level) {
+        case "Level 1":
+          prompt = "Generate a simple paragraph suitable for elementary reading level. Use basic vocabulary and short sentences.";
+          break;
+        case "Level 2":
+          prompt = "Generate a moderate length text suitable for intermediate reading level. Use varied vocabulary and sentence structures.";
+          break;
+        case "Level 3":
+          prompt = "Generate an advanced text passage with complex sentence structures and sophisticated vocabulary.";
+          break;
+        default:
+          prompt = "Generate a simple reading passage.";
+      }
     }
 
     const completion = await groq.chat.completions.create({
       messages: [
         {
           role: "system",
-          content: "You are a helpful assistant that generates appropriate text for reading and dictation practice, specialized for dyslexic users.",
+          content: "You are a helpful assistant that generates appropriate text for reading and dictation practice, specialized for dyslexic users."
         },
         {
           role: "user",
-          content: prompt,
-        },
+          content: prompt
+        }
       ],
       model: "llama-3.3-70b-versatile",
       temperature: 0.7,
       max_tokens: 150,
     });
 
-    const generatedText = completion.choices[0]?.message?.content || "Default fallback text.";
-
-    // Log the generated text for debugging
-    console.log("Generated Text:", generatedText);
+    const generatedText = completion.choices[0]?.message?.content || "";
 
     return NextResponse.json({ text: generatedText });
   } catch (error) {
-    console.error("Error generating text:", error);
+    console.error('Error generating text:', error);
     return NextResponse.json(
-      { error: "Failed to generate text" },
+      { error: 'Failed to generate text' },
       { status: 500 }
     );
   }
