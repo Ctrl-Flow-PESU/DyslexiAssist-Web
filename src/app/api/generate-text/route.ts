@@ -26,19 +26,19 @@ export async function POST(request: Request) {
       }
     } else {
       // Original reading test prompts
-      switch (level) {
-        case "Level 1":
-          prompt = "Generate a simple paragraph suitable for elementary reading level. Use basic vocabulary and short sentences.";
-          break;
-        case "Level 2":
-          prompt = "Generate a moderate length text suitable for intermediate reading level. Use varied vocabulary and sentence structures.";
-          break;
-        case "Level 3":
-          prompt = "Generate an advanced text passage with complex sentence structures and sophisticated vocabulary.";
-          break;
-        default:
-          prompt = "Generate a simple reading passage.";
-      }
+        switch (level) {
+          case "easy":
+            prompt = "Generate a simple paragraph suitable for elementary reading level. Use basic vocabulary and short sentences. Keep it 2-3 lines long.";
+            break;
+          case "moderate":
+            prompt = "Generate a moderate-length text suitable for intermediate reading level. Use varied vocabulary and sentence structures. Keep it 4-5 lines long.";
+            break;
+          case "hard":
+            prompt = "Generate an advanced text passage with complex sentence structures and sophisticated vocabulary. Keep it 5-6 lines long.";
+            break;
+          default:
+            prompt = "Generate a simple reading passage.";
+        }
     }
 
     const completion = await groq.chat.completions.create({
