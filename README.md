@@ -20,6 +20,24 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## DyslexiAssist Components
+
+### UI Components
+
+The project includes several reusable UI components for accessibility:
+
+- **Input (`/components/ui/input.jsx`)**: A customized input component with proper accessibility attributes and styling.
+- **Reading (`/components/Reading.tsx`)**: A reading test component that measures reading speed and comprehension.
+- **FormExample (`/components/FormExample.tsx`)**: A form component example with validation and proper error handling.
+
+### Pages
+
+- **Input Test (`/app/input-test/page.tsx`)**: Demonstrates various input field types and the form component.
+- **Timed Reading (`/app/timed-reading/page.tsx`)**: A reading test that measures reading speed.
+- **Dictation Test (`/app/dictation-test/page.tsx`)**: Tests users' ability to type what they hear.
+- **Proofreading (`/app/proofreading/page.tsx`)**: Provides feedback on text accuracy.
+- **Contrast Test (`/app/contrast-test/page.tsx`)**: Helps users find comfortable text/background combinations.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

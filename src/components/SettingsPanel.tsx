@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useAccessibility } from '@/contexts/AccessibilityContext';
 import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
+import { cn } from "@/lib/utils";
 
 export default function SettingsPanel() {
   const { settings, updateSettings } = useAccessibility();
@@ -42,6 +43,9 @@ export default function SettingsPanel() {
     updateSettings({ speechRate: value[0] });
   };
 
+  // Define text color class based on settings
+  const textColorClass = settings.highContrast ? 'text-white' : 'text-black dark:text-black';
+
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
@@ -70,7 +74,7 @@ export default function SettingsPanel() {
         </div>
 
         <SheetHeader className="text-center">
-          <SheetTitle className={`settings-panel-title text-2xl font-bold ${settings.highContrast ? 'text-white' : ''}`}>
+          <SheetTitle className={`settings-panel-title text-2xl font-bold ${textColorClass}`}>
             Accessibility Settings
           </SheetTitle>
         </SheetHeader>
@@ -78,7 +82,7 @@ export default function SettingsPanel() {
         <div className="space-y-10 pt-8">
           <div className="settings-slider space-y-3">
             <div className="flex justify-between mb-2">
-              <Label className={`settings-label ${settings.highContrast ? 'text-white' : ''}`}>
+              <Label className={`settings-label ${textColorClass}`}>
                 Font Size ({settings.fontSize}%)
               </Label>
             </div>
@@ -98,7 +102,7 @@ export default function SettingsPanel() {
 
           <div className="settings-slider space-y-3">
             <div className="flex justify-between mb-2">
-              <Label className={`settings-label ${settings.highContrast ? 'text-white' : ''}`}>
+              <Label className={`settings-label ${textColorClass}`}>
                 Line Spacing ({settings.lineSpacing}x)
               </Label>
             </div>
@@ -118,7 +122,7 @@ export default function SettingsPanel() {
 
           <div className="settings-slider space-y-3">
             <div className="flex justify-between mb-2">
-              <Label className={`settings-label ${settings.highContrast ? 'text-white' : ''}`}>
+              <Label className={`settings-label ${textColorClass}`}>
                 Letter Spacing ({settings.letterSpacing}px)
               </Label>
             </div>
@@ -138,7 +142,7 @@ export default function SettingsPanel() {
 
           <div className="settings-slider space-y-3">
             <div className="flex justify-between mb-2">
-              <Label className={`settings-label ${settings.highContrast ? 'text-white' : ''}`}>
+              <Label className={`settings-label ${textColorClass}`}>
                 Speech Rate ({settings.speechRate}x)
               </Label>
             </div>
@@ -157,7 +161,7 @@ export default function SettingsPanel() {
           </div>
 
           <div className="flex items-center justify-between py-2">
-            <Label className={`settings-label ${settings.highContrast ? 'text-white' : ''}`}>
+            <Label className={`settings-label ${textColorClass}`}>
               High Contrast
             </Label>
             <Switch
@@ -168,7 +172,7 @@ export default function SettingsPanel() {
           </div>
 
           <div className="flex items-center justify-between py-2">
-            <Label className={`settings-label ${settings.highContrast ? 'text-white' : ''}`}>
+            <Label className={`settings-label ${textColorClass}`}>
               Use OpenDyslexic Font
             </Label>
             <Switch

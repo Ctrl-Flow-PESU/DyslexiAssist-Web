@@ -132,18 +132,18 @@ ${data.errors.length > 0 ? 'Areas to improve:\n' + data.errors.join('\n') : 'No 
     }
   };
 
-  const handleSpeedChange = (value: number[]) => {
-    const newRate = value[0];
-    setReadingSpeed(newRate);
-    // Update global speech rate setting
-    updateSettings({ speechRate: newRate });
+  // const handleSpeedChange = (value: number[]) => {
+  //   const newRate = value[0];
+  //   setReadingSpeed(newRate);
+  //   // Update global speech rate setting
+  //   updateSettings({ speechRate: newRate });
     
-    // If currently reading, update the speech rate without restarting
-    if (isReading && speech && window.speechSynthesis) {
-      // Update rate without canceling current speech
-      speech.rate = newRate;
-    }
-  };
+  //   // If currently reading, update the speech rate without restarting
+  //   if (isReading && speech && window.speechSynthesis) {
+  //     // Update rate without canceling current speech
+  //     speech.rate = newRate;
+  //   }
+  // };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/20 font-['OpenDyslexic']">
