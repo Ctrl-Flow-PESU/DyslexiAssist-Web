@@ -161,15 +161,15 @@ export default function SettingsPanel() {
           </div>
 
           <div className="flex items-center justify-between py-2">
-            <Label className={`settings-label ${textColorClass}`}>
-              High Contrast <span className="italic">(Beta)</span>
-            </Label>
-            <Switch
-              className="bg-transparent"
-              checked={settings.highContrast}
-              onCheckedChange={(checked: boolean) => updateSettings({ highContrast: checked })}
-            />
-          </div>
+  <Label className={`settings-label ${textColorClass}`}>
+    High Contrast <span className="italic text-green-500">(Beta)</span>
+  </Label>
+  <Switch
+    className="bg-transparent"
+    checked={settings.highContrast}
+    onCheckedChange={(checked: boolean) => updateSettings({ highContrast: checked })}
+  />
+</div>
 
           <div className="flex items-center justify-between py-2">
             <Label className={`settings-label ${textColorClass}`}>
