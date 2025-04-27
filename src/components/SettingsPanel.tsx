@@ -83,13 +83,6 @@ export default function SettingsPanel() {
               </Label>
             </div>
             <Slider
-<<<<<<< HEAD
-              value={[settings.fontSize]}
-              onValueChange={([value]: [number]) => updateSettings({ fontSize: value })}
-              min={75}
-              max={200}
-              step={25}
-=======
               className="w-full"
               defaultValue={[settings.fontSize]}
               value={[settings.fontSize]}
@@ -100,7 +93,6 @@ export default function SettingsPanel() {
               data-radix-slider-thumb
               data-radix-slider-track 
               data-radix-slider-range
->>>>>>> b7855126dbcd7f0b3a11cb8a31d9763247d22b51
             />
           </div>
 
@@ -111,13 +103,6 @@ export default function SettingsPanel() {
               </Label>
             </div>
             <Slider
-<<<<<<< HEAD
-              value={[settings.lineSpacing]}
-              onValueChange={([value]: [number]) => updateSettings({ lineSpacing: value })}
-              min={1}
-              max={3}
-              step={0.25}
-=======
               className="w-full"
               defaultValue={[settings.lineSpacing]}
               value={[settings.lineSpacing]}
@@ -128,7 +113,6 @@ export default function SettingsPanel() {
               data-radix-slider-thumb
               data-radix-slider-track 
               data-radix-slider-range
->>>>>>> b7855126dbcd7f0b3a11cb8a31d9763247d22b51
             />
           </div>
 
@@ -139,13 +123,6 @@ export default function SettingsPanel() {
               </Label>
             </div>
             <Slider
-<<<<<<< HEAD
-              value={[settings.letterSpacing]}
-              onValueChange={([value]: [number]) => updateSettings({ letterSpacing: value })}
-              min={0}
-              max={5}
-              step={0.5}
-=======
               className="w-full"
               defaultValue={[settings.letterSpacing]}
               value={[settings.letterSpacing]}
@@ -156,7 +133,6 @@ export default function SettingsPanel() {
               data-radix-slider-thumb
               data-radix-slider-track 
               data-radix-slider-range
->>>>>>> b7855126dbcd7f0b3a11cb8a31d9763247d22b51
             />
           </div>
 
@@ -167,13 +143,6 @@ export default function SettingsPanel() {
               </Label>
             </div>
             <Slider
-<<<<<<< HEAD
-              value={[settings.speechRate]}
-              onValueChange={([value]: [number]) => updateSettings({ speechRate: value })}
-              min={0.5}
-              max={2}
-              step={0.1}
-=======
               className="w-full"
               defaultValue={[settings.speechRate]}
               value={[settings.speechRate]}
@@ -184,7 +153,6 @@ export default function SettingsPanel() {
               data-radix-slider-thumb
               data-radix-slider-track 
               data-radix-slider-range
->>>>>>> b7855126dbcd7f0b3a11cb8a31d9763247d22b51
             />
           </div>
 
@@ -193,10 +161,7 @@ export default function SettingsPanel() {
               High Contrast
             </Label>
             <Switch
-<<<<<<< HEAD
-=======
               className="bg-transparent"
->>>>>>> b7855126dbcd7f0b3a11cb8a31d9763247d22b51
               checked={settings.highContrast}
               onCheckedChange={(checked: boolean) => updateSettings({ highContrast: checked })}
             />
@@ -207,10 +172,7 @@ export default function SettingsPanel() {
               Use OpenDyslexic Font
             </Label>
             <Switch
-<<<<<<< HEAD
-=======
               className="bg-transparent"
->>>>>>> b7855126dbcd7f0b3a11cb8a31d9763247d22b51
               checked={settings.useOpenDyslexic}
               onCheckedChange={(checked: boolean) => updateSettings({ useOpenDyslexic: checked })}
             />
